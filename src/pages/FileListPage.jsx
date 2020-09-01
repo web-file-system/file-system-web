@@ -1,6 +1,7 @@
 import React from "react";
 import { getFileListData } from "../utils/ajax";
 import { Table, Button } from "antd";
+import server from "../utils/server";
 export default class FileListPage extends React.Component {
     constructor(props) {
         super(props);
@@ -13,6 +14,21 @@ export default class FileListPage extends React.Component {
                 title: "名称",
                 dataIndex: "name",
                 key: "name",
+                render: (text, record) => {
+                    if (record.isDir === true) {
+                        return (
+                            <Button
+                                type="link"
+                                onClick={() => {
+                                    this.dirNameClick(record);
+                                }}
+                            >
+                                {text}
+                            </Button>
+                        );
+                    }
+                    return text;
+                },
             },
             {
                 title: "大小",
@@ -50,11 +66,11 @@ export default class FileListPage extends React.Component {
     }
 
     componentDidMount() {
-        this.getFileListData();
+        this.getFileListData(server.root);
     }
 
-    getFileListData = () => {
-        getFileListData("/Users/zhangwenqi")
+    getFileListData = (path) => {
+        getFileListData(path)
             .then((result) => {
                 console.log(result);
                 const code = result.code;
@@ -69,6 +85,10 @@ export default class FileListPage extends React.Component {
             });
     };
 
+    dirNameClick = (record) => {
+        console.log("dirNameClick:", record);
+        this.getFileListData(record.path);
+    };
     render() {
         const { dataSource } = this.state;
 
@@ -79,6 +99,7 @@ export default class FileListPage extends React.Component {
                     columns={this.columns}
                     dataSource={dataSource}
                     rowKey={(record) => record.name}
+                    pagination={{ pageSize: 15 }}
                 />
             </div>
         );

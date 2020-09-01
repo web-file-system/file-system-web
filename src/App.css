@@ -9,4 +9,12 @@
 
 .site-layout-background {
     background: #fff;
+    height: 100%;
+    /* overflow-y: scroll; */
+}
+
+.site-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
