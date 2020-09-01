@@ -54,7 +54,7 @@ export default class FileListPage extends React.Component {
     }
 
     getFileListData = () => {
-        getFileListData()
+        getFileListData("/hehe")
             .then((result) => {
                 console.log(result);
                 const code = result.code;
