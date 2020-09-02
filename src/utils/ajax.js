@@ -116,3 +116,22 @@ export function unzipFileOrDir(path) {
             });
     });
 }
+
+export function copyFileOrDir({ type, path }) {
+    return new Promise((resolve, reject) => {
+        const url = `${server.host}/copy`;
+        const data = {
+            type: type,
+            path: path,
+        };
+        ajaxPost({ url, data, resolve, reject })
+            .then((result) => {
+                // console.log("result:", result);
+                resolve(result);
+            })
+            .catch((error) => {
+                console.log("error:", error);
+                reject(error);
+            });
+    });
+}

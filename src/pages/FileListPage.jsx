@@ -4,6 +4,7 @@ import {
     deleteFileOrDir,
     zipFileOrDir,
     unzipFileOrDir,
+    copyFileOrDir,
 } from "../utils/ajax";
 import { Table, Button, message, Space } from "antd";
 import { ReloadOutlined } from "@ant-design/icons";
@@ -62,6 +63,7 @@ export default class FileListPage extends React.Component {
                                 onClick={() => {
                                     this.zipFileOrDirClick(record);
                                 }}
+                                disabled={record.isFile === false}
                             >
                                 压缩
                             </Button>
@@ -80,7 +82,14 @@ export default class FileListPage extends React.Component {
                             >
                                 下载
                             </Button>
-                            <Button type="link">备份</Button>
+                            <Button
+                                type="link"
+                                onClick={() => {
+                                    this.copyileOrDirClick(record);
+                                }}
+                            >
+                                备份
+                            </Button>
                             <Button
                                 type="link"
                                 onClick={() => {
@@ -160,6 +169,26 @@ export default class FileListPage extends React.Component {
     };
     unzipFileOrDirClick = (record) => {
         unzipFileOrDir(record.path)
+            .then((result) => {
+                if (result.code === 1) {
+                    this.getFileListData(this.path);
+
+                    message.success(result.message);
+                } else {
+                    message.error(result.message);
+                }
+            })
+            .catch((error) => {
+                message.error(error.message);
+            });
+    };
+
+    copyileOrDirClick = (record) => {
+        const data = {
+            path: record.path,
+            type: record.isFile === true ? "file" : "dir",
+        };
+        copyFileOrDir(data)
             .then((result) => {
                 if (result.code === 1) {
                     this.getFileListData(this.path);
