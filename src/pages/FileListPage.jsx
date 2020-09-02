@@ -68,6 +68,7 @@ export default class FileListPage extends React.Component {
                 },
             },
         ];
+        this.path = null;
     }
 
     componentDidMount() {
@@ -80,6 +81,8 @@ export default class FileListPage extends React.Component {
                 console.log(result);
                 const code = result.code;
                 if (code === 1) {
+                    this.path = path;
+
                     this.setState({
                         dataSource: result.data,
                     });
@@ -91,20 +94,19 @@ export default class FileListPage extends React.Component {
     };
 
     dirNameClick = (record) => {
-        console.log("dirNameClick:", record);
         this.getFileListData(record.path);
     };
 
     deleteFileOrDirClick = (record) => {
-        console.log("deletFileOrDirClick:", record);
         const data = {
             path: record.path,
             type: record.isFile === true ? "file" : "dir",
         };
         deleteFileOrDir(data)
             .then((result) => {
-                console.log("deleteFileOrDirClick:", result);
                 if (result.code === 1) {
+                    this.getFileListData(this.path);
+
                     message.success(result.message);
                 } else {
                     message.error(result.message);
