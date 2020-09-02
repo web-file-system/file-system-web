@@ -98,3 +98,21 @@ export function zipFileOrDir(path) {
             });
     });
 }
+
+export function unzipFileOrDir(path) {
+    return new Promise((resolve, reject) => {
+        const url = `${server.host}/unzip`;
+        const data = {
+            path: path,
+        };
+        ajaxPost({ url, data, resolve, reject })
+            .then((result) => {
+                // console.log("result:", result);
+                resolve(result);
+            })
+            .catch((error) => {
+                console.log("error:", error);
+                reject(error);
+            });
+    });
+}

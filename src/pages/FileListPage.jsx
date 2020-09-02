@@ -1,5 +1,10 @@
 import React from "react";
-import { getFileListData, deleteFileOrDir, zipFileOrDir } from "../utils/ajax";
+import {
+    getFileListData,
+    deleteFileOrDir,
+    zipFileOrDir,
+    unzipFileOrDir,
+} from "../utils/ajax";
 import { Table, Button, message, Space } from "antd";
 import { ReloadOutlined } from "@ant-design/icons";
 import server from "../utils/server";
@@ -60,8 +65,21 @@ export default class FileListPage extends React.Component {
                             >
                                 压缩
                             </Button>
-                            <Button type="link">解压</Button>
-                            <Button type="link">下载</Button>
+                            <Button
+                                type="link"
+                                onClick={() => {
+                                    this.unzipFileOrDirClick(record);
+                                }}
+                                disabled={record.isZip === false}
+                            >
+                                解压
+                            </Button>
+                            <Button
+                                type="link"
+                                disabled={record.isFile === false}
+                            >
+                                下载
+                            </Button>
                             <Button type="link">备份</Button>
                             <Button
                                 type="link"
@@ -127,6 +145,21 @@ export default class FileListPage extends React.Component {
 
     zipFileOrDirClick = (record) => {
         zipFileOrDir(record.path)
+            .then((result) => {
+                if (result.code === 1) {
+                    this.getFileListData(this.path);
+
+                    message.success(result.message);
+                } else {
+                    message.error(result.message);
+                }
+            })
+            .catch((error) => {
+                message.error(error.message);
+            });
+    };
+    unzipFileOrDirClick = (record) => {
+        unzipFileOrDir(record.path)
             .then((result) => {
                 if (result.code === 1) {
                     this.getFileListData(this.path);
