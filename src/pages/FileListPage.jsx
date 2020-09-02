@@ -1,5 +1,5 @@
 import React from "react";
-import { getFileListData } from "../utils/ajax";
+import { getFileListData, deleteFileOrDir } from "../utils/ajax";
 import { Table, Button } from "antd";
 import server from "../utils/server";
 export default class FileListPage extends React.Component {
@@ -49,15 +49,20 @@ export default class FileListPage extends React.Component {
                 title: "操作",
                 key: "action",
                 render: (text, record) => {
-                    console.log(text);
-                    console.log(record);
                     return (
                         <React.Fragment>
                             <Button type="link">压缩</Button>
                             <Button type="link">解压</Button>
                             <Button type="link">下载</Button>
                             <Button type="link">备份</Button>
-                            <Button type="link">删除</Button>
+                            <Button
+                                type="link"
+                                onClick={() => {
+                                    this.deleteFileOrDirClick(record);
+                                }}
+                            >
+                                删除
+                            </Button>
                         </React.Fragment>
                     );
                 },
@@ -88,6 +93,19 @@ export default class FileListPage extends React.Component {
     dirNameClick = (record) => {
         console.log("dirNameClick:", record);
         this.getFileListData(record.path);
+    };
+
+    deleteFileOrDirClick = (record) => {
+        console.log("deletFileOrDirClick:", record);
+        const data = {
+            path: record.path,
+            type: record.isFile === true ? "file" : "dir",
+        };
+        deleteFileOrDir(data)
+            .then((result) => {
+                console.log("deleteFileOrDirClick:", result);
+            })
+            .catch(() => {});
     };
     render() {
         const { dataSource } = this.state;

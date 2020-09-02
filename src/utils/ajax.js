@@ -61,3 +61,22 @@ export function getRootDirListData(path) {
             });
     });
 }
+
+export function deleteFileOrDir({ type, path }) {
+    return new Promise((resolve, reject) => {
+        const url = `${server.host}/delete`;
+        const data = {
+            type: type,
+            path: path,
+        };
+        ajaxPost({ url, data, resolve, reject })
+            .then((result) => {
+                // console.log("result:", result);
+                resolve(result);
+            })
+            .catch((error) => {
+                console.log("error:", error);
+                reject(error);
+            });
+    });
+}
