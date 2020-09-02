@@ -1,6 +1,7 @@
 import React from "react";
 import { getFileListData, deleteFileOrDir } from "../utils/ajax";
-import { Table, Button, message } from "antd";
+import { Table, Button, message, Space } from "antd";
+import { ReloadOutlined } from "@ant-design/icons";
 import server from "../utils/server";
 export default class FileListPage extends React.Component {
     constructor(props) {
@@ -68,11 +69,11 @@ export default class FileListPage extends React.Component {
                 },
             },
         ];
-        this.path = null;
+        this.path = server.root;
     }
 
     componentDidMount() {
-        this.getFileListData(server.root);
+        this.getFileListData(this.path);
     }
 
     getFileListData = (path) => {
@@ -116,11 +117,23 @@ export default class FileListPage extends React.Component {
                 message.error(error.message);
             });
     };
+
+    reloadClick = () => {
+        this.getFileListData(this.path);
+    };
     render() {
         const { dataSource } = this.state;
 
         return (
             <div>
+                <Space style={{ marginBottom: 16 }}>
+                    <Button
+                        icon={<ReloadOutlined />}
+                        onClick={this.reloadClick}
+                    >
+                        刷新
+                    </Button>
+                </Space>
                 <Table
                     bordered
                     columns={this.columns}
