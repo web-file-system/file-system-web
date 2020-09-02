@@ -5,7 +5,7 @@ import {
     LaptopOutlined,
     NotificationOutlined,
 } from "@ant-design/icons";
-import { getFileListData } from "../utils/ajax";
+import { getRootDirListData } from "../utils/ajax";
 import server from "../utils/server";
 
 export default class SideMenu extends React.Component {
@@ -18,10 +18,10 @@ export default class SideMenu extends React.Component {
     }
 
     componentDidMount() {
-        this.getFileListData();
+        this.getRootDirListData();
     }
-    getFileListData = () => {
-        getFileListData(server.root)
+    getRootDirListData = () => {
+        getRootDirListData(server.root)
             .then((result) => {
                 console.log(result);
                 const code = result.code;

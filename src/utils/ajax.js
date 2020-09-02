@@ -32,11 +32,24 @@ export function getFileListData(path) {
         const data = {
             path: path,
         };
-        // const fromData = new FormData();
-        // fromData.append("path", path);
+        ajaxPost({ url, data, resolve, reject })
+            .then((result) => {
+                // console.log("result:", result);
+                resolve(result);
+            })
+            .catch((error) => {
+                console.log("error:", error);
+                reject(error);
+            });
+    });
+}
 
-        // const data = new URLSearchParams();
-        // data.append("path", path);
+export function getRootDirListData(path) {
+    return new Promise((resolve, reject) => {
+        const url = `${server.host}/root`;
+        const data = {
+            path: path,
+        };
         ajaxPost({ url, data, resolve, reject })
             .then((result) => {
                 // console.log("result:", result);
