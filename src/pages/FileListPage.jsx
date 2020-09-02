@@ -1,6 +1,6 @@
 import React from "react";
 import { getFileListData, deleteFileOrDir } from "../utils/ajax";
-import { Table, Button } from "antd";
+import { Table, Button, message } from "antd";
 import server from "../utils/server";
 export default class FileListPage extends React.Component {
     constructor(props) {
@@ -104,8 +104,15 @@ export default class FileListPage extends React.Component {
         deleteFileOrDir(data)
             .then((result) => {
                 console.log("deleteFileOrDirClick:", result);
+                if (result.code === 1) {
+                    message.success(result.message);
+                } else {
+                    message.error(result.message);
+                }
             })
-            .catch(() => {});
+            .catch((error) => {
+                message.error(error.message);
+            });
     };
     render() {
         const { dataSource } = this.state;
