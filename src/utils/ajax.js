@@ -80,3 +80,21 @@ export function deleteFileOrDir({ type, path }) {
             });
     });
 }
+
+export function zipFileOrDir(path) {
+    return new Promise((resolve, reject) => {
+        const url = `${server.host}/zip`;
+        const data = {
+            path: path,
+        };
+        ajaxPost({ url, data, resolve, reject })
+            .then((result) => {
+                // console.log("result:", result);
+                resolve(result);
+            })
+            .catch((error) => {
+                console.log("error:", error);
+                reject(error);
+            });
+    });
+}

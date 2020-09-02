@@ -1,5 +1,5 @@
 import React from "react";
-import { getFileListData, deleteFileOrDir } from "../utils/ajax";
+import { getFileListData, deleteFileOrDir, zipFileOrDir } from "../utils/ajax";
 import { Table, Button, message, Space } from "antd";
 import { ReloadOutlined } from "@ant-design/icons";
 import server from "../utils/server";
@@ -52,7 +52,14 @@ export default class FileListPage extends React.Component {
                 render: (text, record) => {
                     return (
                         <React.Fragment>
-                            <Button type="link">压缩</Button>
+                            <Button
+                                type="link"
+                                onClick={() => {
+                                    this.zipFileOrDirClick(record);
+                                }}
+                            >
+                                压缩
+                            </Button>
                             <Button type="link">解压</Button>
                             <Button type="link">下载</Button>
                             <Button type="link">备份</Button>
@@ -104,6 +111,22 @@ export default class FileListPage extends React.Component {
             type: record.isFile === true ? "file" : "dir",
         };
         deleteFileOrDir(data)
+            .then((result) => {
+                if (result.code === 1) {
+                    this.getFileListData(this.path);
+
+                    message.success(result.message);
+                } else {
+                    message.error(result.message);
+                }
+            })
+            .catch((error) => {
+                message.error(error.message);
+            });
+    };
+
+    zipFileOrDirClick = (record) => {
+        zipFileOrDir(record.path)
             .then((result) => {
                 if (result.code === 1) {
                     this.getFileListData(this.path);
