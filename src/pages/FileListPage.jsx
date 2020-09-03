@@ -6,6 +6,7 @@ import {
     unzipFileOrDir,
     copyFileOrDir,
     downloadFile,
+    uploadFile,
 } from "../utils/ajax";
 import { Table, Button, message, Space } from "antd";
 import {
@@ -15,12 +16,14 @@ import {
     RollbackOutlined,
 } from "@ant-design/icons";
 import server from "../utils/server";
+import UploadModal from "../components/UploadModal";
 export default class FileListPage extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
             dataSource: [],
+            uploadVisible: false,
         };
         this.columns = [
             {
@@ -213,31 +216,41 @@ export default class FileListPage extends React.Component {
 
     downloadFileClick = (record) => {
         downloadFile(record);
-        //     .then((result) => {
-        //         if (result.code === 1) {
-        //             this.getFileListData(this.path);
-
-        //             message.success(result.message);
-        //         } else {
-        //             message.error(result.message);
-        //         }
-        //     })
-        //     .catch((error) => {
-        //         message.error(error.message);
-        //     });
-        // window.open(record.path);
-        // window.open(
-        //     `http://localhost/api/download?path=${record.path}&name=${record.name}`,
-        //     "_self"
-        // );
     };
 
     reloadClick = () => {
         this.getFileListData(this.path);
     };
 
+    showUploadModal = () => {
+        this.setState({
+            uploadVisible: true,
+        });
+    };
+    uploadCancel = () => {
+        this.setState({
+            uploadVisible: false,
+        });
+    };
+    uploadSuccess = (data) => {
+        console.log("uploadSuccess", data);
+        data.path = this.path;
+        uploadFile(data)
+            .then((result) => {
+                this.setState({
+                    uploadVisible: false,
+                });
+                this.getFileListData(this.path);
+            })
+            .catch((error) => {
+                this.setState({
+                    uploadVisible: false,
+                });
+                message.error(error.message);
+            });
+    };
     render() {
-        const { dataSource } = this.state;
+        const { dataSource, uploadVisible } = this.state;
 
         return (
             <div>
@@ -257,11 +270,16 @@ export default class FileListPage extends React.Component {
                     </Button>
                     <Button
                         icon={<UploadOutlined />}
-                        onClick={this.reloadClick}
+                        onClick={this.showUploadModal}
                     >
                         上传
                     </Button>
                 </Space>
+                <UploadModal
+                    visible={uploadVisible}
+                    cancel={this.uploadCancel}
+                    success={this.uploadSuccess}
+                />
                 <Table
                     bordered
                     columns={this.columns}
