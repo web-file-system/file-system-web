@@ -189,3 +189,22 @@ export function uploadFile({ file, path }) {
             });
     });
 }
+
+export function newDir({ name, path }) {
+    return new Promise((resolve, reject) => {
+        const url = `${server.host}/newDir`;
+
+        const data = { name, path };
+
+        console.log("newDir:", data);
+        ajaxPost({ url, data, resolve, reject })
+            .then((result) => {
+                // console.log("result:", result);
+                resolve(result);
+            })
+            .catch((error) => {
+                console.log("error:", error);
+                reject(error);
+            });
+    });
+}

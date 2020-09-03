@@ -7,6 +7,7 @@ import {
     copyFileOrDir,
     downloadFile,
     uploadFile,
+    newDir,
 } from "../utils/ajax";
 import { Table, Button, message, Space } from "antd";
 import {
@@ -17,6 +18,8 @@ import {
 } from "@ant-design/icons";
 import server from "../utils/server";
 import UploadModal from "../components/UploadModal";
+import NewPackageModal from "../components/NewPackageModal";
+
 export default class FileListPage extends React.Component {
     constructor(props) {
         super(props);
@@ -24,6 +27,10 @@ export default class FileListPage extends React.Component {
         this.state = {
             dataSource: [],
             uploadVisible: false,
+            newLoading: false,
+            newVisible: false,
+            editLoading: false,
+            editVisible: false,
         };
         this.columns = [
             {
@@ -249,8 +256,80 @@ export default class FileListPage extends React.Component {
                 message.error(error.message);
             });
     };
+
+    newFolderHandler = () => {
+        this.setState({
+            newVisible: true,
+        });
+    };
+
+    newModalOkHandler = (data) => {
+        this.setState({
+            newLoading: true,
+        });
+        const data2 = {
+            path: this.path,
+            name: data.name,
+        };
+
+        newDir(data2)
+            .then((response) => {
+                this.setState({
+                    newLoading: false,
+                    newVisible: false,
+                });
+                this.getFileListData(this.path);
+            })
+            .catch((error) => {
+                this.setState({
+                    newLoading: false,
+                });
+                message.error(error.message, 1.5);
+            });
+    };
+    newModalCancelHandel = () => {
+        this.setState({
+            newVisible: false,
+        });
+    };
+    showEditModal = (data) => {
+        this.setState({
+            editData: data,
+            editVisible: true,
+        });
+    };
+    editModalOkHandler = (data) => {
+        this.setState({
+            editLoading: true,
+        });
+        // renameFileOrDir(data)
+        //     .then((response) => {
+        //         this.setState({
+        //             editLoading: false,
+        //             editVisible: false,
+        //         });
+        //         this.getFileList();
+        //     })
+        //     .catch((error) => {
+        //         this.setState({
+        //             editLoading: false,
+        //         });
+        //         message.error(error.message, 1.5);
+        //     });
+    };
+    editModalCancelHandel = () => {
+        this.setState({
+            editVisible: false,
+        });
+    };
+
     render() {
-        const { dataSource, uploadVisible } = this.state;
+        const {
+            dataSource,
+            uploadVisible,
+            newVisible,
+            editVisible,
+        } = this.state;
 
         return (
             <div>
@@ -264,7 +343,7 @@ export default class FileListPage extends React.Component {
                     </Button>
                     <Button
                         icon={<FolderAddOutlined />}
-                        onClick={this.reloadClick}
+                        onClick={this.newFolderHandler}
                     >
                         新建
                     </Button>
@@ -279,6 +358,24 @@ export default class FileListPage extends React.Component {
                     visible={uploadVisible}
                     cancel={this.uploadCancel}
                     success={this.uploadSuccess}
+                />
+                <NewPackageModal
+                    // defaultData={editData}
+                    treeData={this.state.data}
+                    loading={this.state.newLoading}
+                    title="新建"
+                    visible={newVisible}
+                    onOk={this.newModalOkHandler}
+                    onCancel={this.newModalCancelHandel}
+                />
+                <NewPackageModal
+                    defaultData={this.state.editData}
+                    treeData={this.state.data}
+                    loading={this.state.editLoading}
+                    title="编辑"
+                    visible={editVisible}
+                    onOk={this.editModalOkHandler}
+                    onCancel={this.editModalCancelHandel}
                 />
                 <Table
                     bordered
