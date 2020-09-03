@@ -1,10 +1,6 @@
 import React from "react";
 import { Menu } from "antd";
-import {
-    UserOutlined,
-    LaptopOutlined,
-    NotificationOutlined,
-} from "@ant-design/icons";
+import { FolderOpenTwoTone } from "@ant-design/icons";
 import { getRootDirListData } from "../utils/ajax";
 import server from "../utils/server";
 
@@ -39,7 +35,7 @@ export default class SideMenu extends React.Component {
     getMenuItem = (data) => {
         return data.map((element, index) => {
             return (
-                <Menu.Item icon={<UserOutlined />} key={index}>
+                <Menu.Item icon={<FolderOpenTwoTone />} key={index}>
                     {element.name}
                 </Menu.Item>
             );

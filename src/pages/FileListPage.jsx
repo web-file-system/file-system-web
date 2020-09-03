@@ -5,9 +5,15 @@ import {
     zipFileOrDir,
     unzipFileOrDir,
     copyFileOrDir,
+    downloadFile,
 } from "../utils/ajax";
 import { Table, Button, message, Space } from "antd";
-import { ReloadOutlined } from "@ant-design/icons";
+import {
+    ReloadOutlined,
+    FolderAddOutlined,
+    UploadOutlined,
+    RollbackOutlined,
+} from "@ant-design/icons";
 import server from "../utils/server";
 export default class FileListPage extends React.Component {
     constructor(props) {
@@ -78,6 +84,9 @@ export default class FileListPage extends React.Component {
                             <Button
                                 type="link"
                                 disabled={record.isFile === false}
+                                onClick={() => {
+                                    this.downloadFileClick(record);
+                                }}
                             >
                                 下载
                             </Button>
@@ -202,20 +211,55 @@ export default class FileListPage extends React.Component {
             });
     };
 
+    downloadFileClick = (record) => {
+        downloadFile(record);
+        //     .then((result) => {
+        //         if (result.code === 1) {
+        //             this.getFileListData(this.path);
+
+        //             message.success(result.message);
+        //         } else {
+        //             message.error(result.message);
+        //         }
+        //     })
+        //     .catch((error) => {
+        //         message.error(error.message);
+        //     });
+        // window.open(record.path);
+        // window.open(
+        //     `http://localhost/api/download?path=${record.path}&name=${record.name}`,
+        //     "_self"
+        // );
+    };
+
     reloadClick = () => {
         this.getFileListData(this.path);
     };
+
     render() {
         const { dataSource } = this.state;
 
         return (
             <div>
                 <Space style={{ marginBottom: 16 }}>
+                    <Button icon={<RollbackOutlined />}>返回</Button>
                     <Button
                         icon={<ReloadOutlined />}
                         onClick={this.reloadClick}
                     >
                         刷新
+                    </Button>
+                    <Button
+                        icon={<FolderAddOutlined />}
+                        onClick={this.reloadClick}
+                    >
+                        新建
+                    </Button>
+                    <Button
+                        icon={<UploadOutlined />}
+                        onClick={this.reloadClick}
+                    >
+                        上传
                     </Button>
                 </Space>
                 <Table

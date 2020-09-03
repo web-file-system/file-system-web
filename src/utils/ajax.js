@@ -135,3 +135,10 @@ export function copyFileOrDir({ type, path }) {
             });
     });
 }
+
+export function downloadFile(record) {
+    window.open(
+        `${server.host}/download?path=${record.path}&name=${record.name}`,
+        "_self"
+    );
+}
