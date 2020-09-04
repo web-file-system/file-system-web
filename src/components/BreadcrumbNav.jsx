@@ -2,6 +2,7 @@ import React from "react";
 import { Breadcrumb } from "antd";
 import { getHistory, saveHistory } from "../utils/historyUtil";
 import _ from "lodash";
+import ColorSpan from "./ColorSpan";
 
 export default class BreadcrumbNav extends React.Component {
     constructor(props) {
@@ -29,13 +30,9 @@ export default class BreadcrumbNav extends React.Component {
                         <span data-data={element}>{name}</span>
                     )}
                     {index !== history.length - 1 && (
-                        <span
-                            onClick={this.itemClick}
-                            data-index={index}
-                            style={{ color: "#1890ff", cursor: "pointer" }}
-                        >
+                        <ColorSpan onClick={this.itemClick} data-index={index}>
                             {name}
-                        </span>
+                        </ColorSpan>
                     )}
                 </Breadcrumb.Item>
             );

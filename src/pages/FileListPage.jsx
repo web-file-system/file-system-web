@@ -21,6 +21,8 @@ import UploadModal from "../components/UploadModal";
 import NewDirModal from "../components/NewDirModal";
 import _ from "lodash";
 import { getHistory, saveHistory } from "../utils/historyUtil";
+import ColorSpan from "../components/ColorSpan";
+import moment from "moment";
 
 export default class FileListPage extends React.Component {
     constructor(props) {
@@ -42,14 +44,13 @@ export default class FileListPage extends React.Component {
                 render: (text, record) => {
                     if (record.isDir === true) {
                         return (
-                            <Button
-                                type="link"
+                            <ColorSpan
                                 onClick={() => {
                                     this.pushHistoryClick(record);
                                 }}
                             >
                                 {text}
-                            </Button>
+                            </ColorSpan>
                         );
                     }
                     return text;
@@ -64,11 +65,17 @@ export default class FileListPage extends React.Component {
                 title: "创建时间",
                 dataIndex: "createTime",
                 key: "createTime",
+                render: (text) => {
+                    return moment(text).format("YYYY-MM-DD HH:mm:ss ");
+                },
             },
             {
                 title: "更新时间",
                 dataIndex: "updateTime",
                 key: "updateTime",
+                render: (text) => {
+                    return moment(text).format("YYYY-MM-DD HH:mm:ss ");
+                },
             },
             {
                 title: "操作",
