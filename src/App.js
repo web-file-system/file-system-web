@@ -2,16 +2,12 @@ import React from "react";
 import "./App.css";
 import FileListPage from "./pages/FileListPage";
 import { Layout } from "antd";
-import SideMenu from "./components/SideMenu";
 import BreadcrumbNav from "./components/BreadcrumbNav";
-const { Content, Sider } = Layout;
+const { Content } = Layout;
 function App() {
     return (
         <Layout style={{ height: "100%" }}>
             <Layout>
-                <Sider width={200} className="site-layout-background">
-                    <SideMenu />
-                </Sider>
                 <Layout style={{ padding: "0 24px 24px" }}>
                     <div className="site-nav">
                         <BreadcrumbNav />

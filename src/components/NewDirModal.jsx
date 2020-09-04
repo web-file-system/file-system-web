@@ -7,7 +7,7 @@ const formItemLayout = {
     wrapperCol: { span: 14 },
 };
 
-class NewPackageModal extends React.Component {
+class NewDirModal extends React.Component {
     // const [form] = Form.useForm(null);
     constructor(props) {
         super(props);
@@ -100,4 +100,4 @@ class NewPackageModal extends React.Component {
     }
 }
 
-export default NewPackageModal;
+export default NewDirModal;

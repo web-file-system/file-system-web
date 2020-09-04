@@ -18,7 +18,7 @@ import {
     RollbackOutlined,
 } from "@ant-design/icons";
 import UploadModal from "../components/UploadModal";
-import NewPackageModal from "../components/NewPackageModal";
+import NewDirModal from "../components/NewDirModal";
 import _ from "lodash";
 import { getHistory, saveHistory } from "../utils/historyUtil";
 
@@ -402,7 +402,7 @@ export default class FileListPage extends React.Component {
                     cancel={this.uploadCancel}
                     success={this.uploadSuccess}
                 />
-                <NewPackageModal
+                <NewDirModal
                     // defaultData={editData}
                     treeData={this.state.data}
                     loading={this.state.newLoading}
@@ -411,7 +411,7 @@ export default class FileListPage extends React.Component {
                     onOk={this.newModalOkHandler}
                     onCancel={this.newModalCancelHandel}
                 />
-                <NewPackageModal
+                <NewDirModal
                     defaultData={this.state.editData}
                     treeData={this.state.data}
                     loading={this.state.editLoading}
