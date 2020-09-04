@@ -136,7 +136,17 @@ export default class FileListPage extends React.Component {
 
     componentDidMount() {
         this.getFileListData();
+        window.addEventListener("pathChange", this.pathChange);
     }
+    componentWillUnmount() {
+        window.removeEventListener("pathChange", this.pathChange);
+    }
+
+    pathChange = (e) => {
+        console.log(e.detail);
+        this.history = getHistory();
+        this.getFileListData();
+    };
     pushHistoryClick = (record) => {
         this.history.push(record.path);
         saveHistory(this.history);

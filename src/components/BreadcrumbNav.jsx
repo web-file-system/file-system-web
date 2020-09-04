@@ -1,6 +1,6 @@
 import React from "react";
 import { Breadcrumb } from "antd";
-import { getHistory } from "../utils/historyUtil";
+import { getHistory, saveHistory } from "../utils/historyUtil";
 import _ from "lodash";
 
 export default class BreadcrumbNav extends React.Component {
@@ -21,12 +21,38 @@ export default class BreadcrumbNav extends React.Component {
     };
     getBreadcrumbItems = () => {
         const history = getHistory();
-        return history.map((element) => {
+        return history.map((element, index) => {
             const name = _.last(element.split("/"));
-            return <Breadcrumb.Item key={element}>{name}</Breadcrumb.Item>;
+            return (
+                <Breadcrumb.Item key={element}>
+                    {index === history.length - 1 && (
+                        <span data-data={element}>{name}</span>
+                    )}
+                    {index !== history.length - 1 && (
+                        <span
+                            onClick={this.itemClick}
+                            data-index={index}
+                            style={{ color: "#1890ff", cursor: "pointer" }}
+                        >
+                            {name}
+                        </span>
+                    )}
+                </Breadcrumb.Item>
+            );
         });
     };
 
+    itemClick = (e) => {
+        const history = getHistory();
+        //1.获取newHistory
+        const index = e.target.getAttribute("data-index");
+        const newHistory = history.slice(0, Number(index) + 1);
+        //2.保存newHistory
+        saveHistory(newHistory);
+        //3.更新
+        const event = new Event("pathChange");
+        window.dispatchEvent(event);
+    };
     render() {
         const items = this.getBreadcrumbItems();
         return <Breadcrumb style={{ margin: "16px 0" }}>{items}</Breadcrumb>;
