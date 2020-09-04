@@ -23,6 +23,7 @@ import _ from "lodash";
 import { getHistory, saveHistory } from "../utils/historyUtil";
 import ColorSpan from "../components/ColorSpan";
 import moment from "moment";
+import sizeUtil from "../utils/sizeUtil";
 
 export default class FileListPage extends React.Component {
     constructor(props) {
@@ -42,7 +43,7 @@ export default class FileListPage extends React.Component {
                 dataIndex: "name",
                 key: "name",
                 render: (text, record) => {
-                    if (record.isDir === true) {
+                    if (record["isDir"] === true) {
                         return (
                             <ColorSpan
                                 onClick={() => {
@@ -60,6 +61,9 @@ export default class FileListPage extends React.Component {
                 title: "大小",
                 dataIndex: "size",
                 key: "size",
+                render: (text) => {
+                    return sizeUtil(text);
+                },
             },
             {
                 title: "创建时间",
@@ -96,7 +100,7 @@ export default class FileListPage extends React.Component {
                                 onClick={() => {
                                     this.unzipFileOrDirClick(record);
                                 }}
-                                disabled={record.isZip === false}
+                                disabled={record["isZip"] === false}
                             >
                                 解压
                             </Button>
@@ -281,7 +285,7 @@ export default class FileListPage extends React.Component {
         // console.log("uploadSuccess", data);
         data.path = _.last(this.history);
         uploadFile(data)
-            .then((result) => {
+            .then(() => {
                 this.setState({
                     uploadVisible: false,
                 });
@@ -311,7 +315,7 @@ export default class FileListPage extends React.Component {
         };
 
         newDir(data2)
-            .then((response) => {
+            .then(() => {
                 this.setState({
                     newLoading: false,
                     newVisible: false,
@@ -347,7 +351,7 @@ export default class FileListPage extends React.Component {
         };
         // return;
         renameFileOrDir(data2)
-            .then((response) => {
+            .then(() => {
                 this.setState({
                     editLoading: false,
                     editVisible: false,
