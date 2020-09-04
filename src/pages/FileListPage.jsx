@@ -20,6 +20,7 @@ import {
 import server from "../utils/server";
 import UploadModal from "../components/UploadModal";
 import NewPackageModal from "../components/NewPackageModal";
+import _ from "lodash";
 
 export default class FileListPage extends React.Component {
     constructor(props) {
@@ -44,7 +45,7 @@ export default class FileListPage extends React.Component {
                             <Button
                                 type="link"
                                 onClick={() => {
-                                    this.dirNameClick(record);
+                                    this.pushHistoryClick(record);
                                 }}
                             >
                                 {text}
@@ -130,21 +131,53 @@ export default class FileListPage extends React.Component {
                 },
             },
         ];
-        this.path = server.root;
+        this.history = this.getHistory();
     }
 
     componentDidMount() {
-        this.getFileListData(this.path);
+        this.getFileListData();
     }
+    saveHistory = () => {
+        localStorage.setItem("history", JSON.stringify(this.history));
+        this.getHistory();
+    };
+    getHistory = () => {
+        const historyStr = localStorage.getItem("history");
+        if (historyStr === undefined || historyStr === null) {
+            return [server.root];
+        } else {
+            const history = JSON.parse(historyStr);
+            if (history.length < 1) {
+                return [server.root];
+            } else {
+                return history;
+            }
+        }
+    };
+    pushHistoryClick = (record) => {
+        this.history.push(record.path);
+        this.saveHistory();
+        this.getFileListData(record.path);
+    };
+    popHistoryClick = () => {
+        if (this.history.length > 1) {
+            this.history.pop();
+            this.saveHistory();
+
+            const path = _.last(this.history);
+            this.getFileListData(path);
+        }
+    };
 
     getFileListData = (path) => {
+        if (path === undefined || path === null) {
+            path = _.last(this.history);
+        }
         getFileListData(path)
             .then((result) => {
                 console.log(result);
                 const code = result.code;
                 if (code === 1) {
-                    this.path = path;
-
                     this.setState({
                         dataSource: result.data,
                     });
@@ -155,10 +188,6 @@ export default class FileListPage extends React.Component {
             });
     };
 
-    dirNameClick = (record) => {
-        this.getFileListData(record.path);
-    };
-
     deleteFileOrDirClick = (record) => {
         const data = {
             path: record.path,
@@ -167,7 +196,7 @@ export default class FileListPage extends React.Component {
         deleteFileOrDir(data)
             .then((result) => {
                 if (result.code === 1) {
-                    this.getFileListData(this.path);
+                    this.getFileListData();
 
                     message.success(result.message);
                 } else {
@@ -183,7 +212,7 @@ export default class FileListPage extends React.Component {
         zipFileOrDir(record.path)
             .then((result) => {
                 if (result.code === 1) {
-                    this.getFileListData(this.path);
+                    this.getFileListData();
 
                     message.success(result.message);
                 } else {
@@ -198,7 +227,7 @@ export default class FileListPage extends React.Component {
         unzipFileOrDir(record.path)
             .then((result) => {
                 if (result.code === 1) {
-                    this.getFileListData(this.path);
+                    this.getFileListData();
 
                     message.success(result.message);
                 } else {
@@ -218,7 +247,7 @@ export default class FileListPage extends React.Component {
         copyFileOrDir(data)
             .then((result) => {
                 if (result.code === 1) {
-                    this.getFileListData(this.path);
+                    this.getFileListData();
 
                     message.success(result.message);
                 } else {
@@ -235,7 +264,7 @@ export default class FileListPage extends React.Component {
     };
 
     reloadClick = () => {
-        this.getFileListData(this.path);
+        this.getFileListData();
     };
 
     showUploadModal = () => {
@@ -249,14 +278,14 @@ export default class FileListPage extends React.Component {
         });
     };
     uploadSuccess = (data) => {
-        console.log("uploadSuccess", data);
-        data.path = this.path;
+        // console.log("uploadSuccess", data);
+        data.path = _.last(this.history);
         uploadFile(data)
             .then((result) => {
                 this.setState({
                     uploadVisible: false,
                 });
-                this.getFileListData(this.path);
+                this.getFileListData();
             })
             .catch((error) => {
                 this.setState({
@@ -277,7 +306,7 @@ export default class FileListPage extends React.Component {
             newLoading: true,
         });
         const data2 = {
-            path: this.path,
+            path: _.last(this.history),
             name: data.name,
         };
 
@@ -287,7 +316,7 @@ export default class FileListPage extends React.Component {
                     newLoading: false,
                     newVisible: false,
                 });
-                this.getFileListData(this.path);
+                this.getFileListData();
             })
             .catch((error) => {
                 this.setState({
@@ -323,7 +352,7 @@ export default class FileListPage extends React.Component {
                     editLoading: false,
                     editVisible: false,
                 });
-                this.getFileListData(this.path);
+                this.getFileListData();
             })
             .catch((error) => {
                 this.setState({
@@ -349,7 +378,13 @@ export default class FileListPage extends React.Component {
         return (
             <div>
                 <Space style={{ marginBottom: 16 }}>
-                    <Button icon={<RollbackOutlined />}>返回</Button>
+                    <Button
+                        icon={<RollbackOutlined />}
+                        onClick={this.popHistoryClick}
+                        disabled={this.history.length <= 1}
+                    >
+                        返回
+                    </Button>
                     <Button
                         icon={<ReloadOutlined />}
                         onClick={this.reloadClick}
