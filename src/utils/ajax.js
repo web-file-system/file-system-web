@@ -193,10 +193,25 @@ export function uploadFile({ file, path }) {
 export function newDir({ name, path }) {
     return new Promise((resolve, reject) => {
         const url = `${server.host}/newDir`;
-
         const data = { name, path };
+        // console.log("newDir:", data);
+        ajaxPost({ url, data, resolve, reject })
+            .then((result) => {
+                // console.log("result:", result);
+                resolve(result);
+            })
+            .catch((error) => {
+                console.log("error:", error);
+                reject(error);
+            });
+    });
+}
 
-        console.log("newDir:", data);
+export function renameFileOrDir({ name, path, type }) {
+    return new Promise((resolve, reject) => {
+        const url = `${server.host}/rename`;
+        const data = { name, path, type };
+        console.log("rename:", data);
         ajaxPost({ url, data, resolve, reject })
             .then((result) => {
                 // console.log("result:", result);

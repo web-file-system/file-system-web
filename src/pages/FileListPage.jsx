@@ -8,6 +8,7 @@ import {
     downloadFile,
     uploadFile,
     newDir,
+    renameFileOrDir,
 } from "../utils/ajax";
 import { Table, Button, message, Space } from "antd";
 import {
@@ -103,10 +104,18 @@ export default class FileListPage extends React.Component {
                             <Button
                                 type="link"
                                 onClick={() => {
-                                    this.copyileOrDirClick(record);
+                                    this.copyFileOrDirClick(record);
                                 }}
                             >
                                 备份
+                            </Button>
+                            <Button
+                                type="link"
+                                onClick={() => {
+                                    this.showEditModal(record);
+                                }}
+                            >
+                                重命名
                             </Button>
                             <Button
                                 type="link"
@@ -201,7 +210,7 @@ export default class FileListPage extends React.Component {
             });
     };
 
-    copyileOrDirClick = (record) => {
+    copyFileOrDirClick = (record) => {
         const data = {
             path: record.path,
             type: record.isFile === true ? "file" : "dir",
@@ -302,20 +311,26 @@ export default class FileListPage extends React.Component {
         this.setState({
             editLoading: true,
         });
-        // renameFileOrDir(data)
-        //     .then((response) => {
-        //         this.setState({
-        //             editLoading: false,
-        //             editVisible: false,
-        //         });
-        //         this.getFileList();
-        //     })
-        //     .catch((error) => {
-        //         this.setState({
-        //             editLoading: false,
-        //         });
-        //         message.error(error.message, 1.5);
-        //     });
+        const data2 = {
+            path: data.path,
+            name: data.name,
+            type: data.isFile === true ? "file" : "dir",
+        };
+        // return;
+        renameFileOrDir(data2)
+            .then((response) => {
+                this.setState({
+                    editLoading: false,
+                    editVisible: false,
+                });
+                this.getFileListData(this.path);
+            })
+            .catch((error) => {
+                this.setState({
+                    editLoading: false,
+                });
+                message.error(error.message, 1.5);
+            });
     };
     editModalCancelHandel = () => {
         this.setState({
