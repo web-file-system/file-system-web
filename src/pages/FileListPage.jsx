@@ -17,10 +17,10 @@ import {
     UploadOutlined,
     RollbackOutlined,
 } from "@ant-design/icons";
-import server from "../utils/server";
 import UploadModal from "../components/UploadModal";
 import NewPackageModal from "../components/NewPackageModal";
 import _ from "lodash";
+import { getHistory, saveHistory } from "../utils/historyUtil";
 
 export default class FileListPage extends React.Component {
     constructor(props) {
@@ -131,38 +131,21 @@ export default class FileListPage extends React.Component {
                 },
             },
         ];
-        this.history = this.getHistory();
+        this.history = getHistory();
     }
 
     componentDidMount() {
         this.getFileListData();
     }
-    saveHistory = () => {
-        localStorage.setItem("history", JSON.stringify(this.history));
-        this.getHistory();
-    };
-    getHistory = () => {
-        const historyStr = localStorage.getItem("history");
-        if (historyStr === undefined || historyStr === null) {
-            return [server.root];
-        } else {
-            const history = JSON.parse(historyStr);
-            if (history.length < 1) {
-                return [server.root];
-            } else {
-                return history;
-            }
-        }
-    };
     pushHistoryClick = (record) => {
         this.history.push(record.path);
-        this.saveHistory();
+        saveHistory(this.history);
         this.getFileListData(record.path);
     };
     popHistoryClick = () => {
         if (this.history.length > 1) {
             this.history.pop();
-            this.saveHistory();
+            saveHistory(this.history);
 
             const path = _.last(this.history);
             this.getFileListData(path);
