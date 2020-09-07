@@ -213,7 +213,10 @@ export default class FileListPage extends React.Component {
     };
 
     zipFileOrDirClick = (record) => {
-        zipFileOrDir(record.path)
+        zipFileOrDir({
+            path: record.path,
+            type: record["isDir"] === true ? "dir" : "file",
+        })
             .then((result) => {
                 if (result.code === 1) {
                     this.getFileListData();

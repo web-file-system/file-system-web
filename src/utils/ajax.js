@@ -85,11 +85,12 @@ export function deleteFileOrDir({ type, path }) {
     });
 }
 
-export function zipFileOrDir(path) {
+export function zipFileOrDir({ path, type }) {
     return new Promise((resolve, reject) => {
         const url = `${server.host}/zip`;
         const data = {
             path: path,
+            type: type,
         };
         ajaxPost({ url, data, resolve, reject })
             .then((result) => {
