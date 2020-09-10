@@ -92,6 +92,7 @@ export default class FileListPage extends React.Component {
                                 onClick={() => {
                                     this.zipFileOrDirClick(record);
                                 }}
+                                disabled={record["isZip"] === true}
                             >
                                 压缩
                             </Button>
